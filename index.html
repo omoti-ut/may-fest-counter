@@ -84,7 +84,7 @@
         counters.forEach((c, i) => c.set(data[i]));
     } catch (_) {
         localStorage.removeItem("data");
-        reset.onpointerdown();
+        reset.onclick();
     }
 
     function create_div() {
