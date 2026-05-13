@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta charset="UTF-8">
+</head>
+
+<body>
+    <div id="display"></div>
+    <div id="reset">RESET</div>
+</body>
+<style>
+body {
+    user-select: none;
+    margin: 0;
+    width: 100vw;
+    height: 100vh;
+    box-sizing: border-box; /* Ensures borders don't cause screen overflow */
+    
+    /* Apply box-sizing globally for predictable border layout */
+    * {
+        box-sizing: border-box;
+    }
+    
+    #display {
+        height: 90%;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        
+        /* Outer border for the main grid container */
+        border: 2px solid black; 
+        
+        /* The gap acts as the vertical border between columns */
+        gap: 2px; 
+        background-color: black; 
+        
+        &>* {
+            display: grid;
+            grid-template-rows: 0.3fr 1fr 2fr 1fr;
+            height: 100%;
+            text-align: center;
+            align-items: center;
+            
+            /* Fill item background so the container's black only shows in the gaps */
+            background-color: white; 
+            
+            /* Internal horizontal borders between the text/buttons inside a column */
+            &>* {
+                border-bottom: 2px solid black;
+                height: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            /* Remove the bottom border from the very last item (▽) */
+            &>:last-child {
+                border-bottom: none;
+            }
+            
+            &>:nth-child(1) {
+                font-size: 3vh;
+            }
+            &>:nth-child(3) {
+                font-size: 16vh;
+            }
+            &>:is(:nth-child(2), :nth-child(4)) {
+                font-size: 14vh;
+            }
+        }
+    }
+
+    #reset {
+        height: 10%;
+        display: flex; /* Changed to flex for perfect vertical alignment with border */
+        align-items: center;
+        justify-content: center;
+        font-size: 5vh;
+        
+        /* Border around the reset button */
+        border: 2px solid black;
+        border-top: none; /* Prevents double border between display and reset */
+    }
+}
+</style>
+<script>
+    const counters = [
+        init_counter("ラーメン"),
+        init_counter("チーズ"),
+        init_counter("追い辛"),
+        init_counter("豆乳")
+    ];
+
+    counters.forEach(counter => display.appendChild(counter));
+    reset.onpointerdown = () => counters.forEach(c => c.reset());
+
+    if(localStorage.length != 0) {
+        try {
+            const data = JSON.parse(localStorage.data);
+            counters.forEach((c,i) => c.set(data[i]));
+        } catch (_) {
+            localStorage.removeItem("data");
+            reset.onpointerdown();
+        }
+    }
+
+    function create_div() {
+        return document.createElement("div");
+    }
+    function init_counter(name) {
+        let counter_elm = create_div();
+        let label_elm = create_div();
+        let up_button_elm = create_div();
+        let counter_display_elm = create_div();
+        let down_button_elm = create_div();
+
+        counter_elm.appendChild(label_elm);
+        counter_elm.appendChild(up_button_elm);
+        counter_elm.appendChild(counter_display_elm);
+        counter_elm.appendChild(down_button_elm);
+
+        counter_elm.value = () => +counter_display_elm.innerText;
+        counter_elm.set = value => {
+            counter_display_elm.innerText = value
+            store_data();
+        }
+        counter_elm.inc = () => {
+            counter_elm.set(counter_elm.value()+1);
+        }
+        counter_elm.dec = () => {
+            counter_elm.set(counter_elm.value()-1);
+        }
+        counter_elm.reset = () => counter_elm.set(0);
+
+        label_elm.innerText = name;
+        up_button_elm.innerText = "△";
+        down_button_elm.innerText = "▽";
+        up_button_elm.onpointerdown = counter_elm.inc;
+        down_button_elm.onpointerdown = counter_elm.dec;
+
+        return counter_elm;
+    }
+    function store_data() {
+        const data = counters.map(x => x.value());
+        localStorage.data = JSON.stringify(data);
+    }
+</script>
+
+</html>
