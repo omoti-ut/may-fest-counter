@@ -14,9 +14,6 @@
     body {
         user-select: none;
         margin: 0;
-        width: 100vw;
-        height: 100vh;
-        box-sizing: border-box;
         /* Ensures borders don't cause screen overflow */
 
         /* Apply box-sizing globally for predictable border layout */
@@ -28,7 +25,7 @@
         }
 
         #display {
-            height: 90%;
+            height: 90vh;
             display: grid;
             grid-template-columns: repeat(4, 1fr);
 
@@ -62,7 +59,7 @@
         }
 
         #reset {
-            height: 10%;
+            height: 10vh;
             display: flex;
             /* Changed to flex for perfect vertical alignment with border */
             align-items: center;
