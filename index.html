@@ -27,10 +27,10 @@
 
         #display {
             height: 90vh;
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            display: flex;
 
             &>* {
+		flex: 1;
                 display: grid;
                 grid-template-rows: 0.3fr 1fr 2fr 1fr;
                 height: 100%;
@@ -74,7 +74,8 @@
         init_counter("ラーメン"),
         init_counter("チーズ"),
         init_counter("追い辛"),
-        init_counter("豆乳")
+        init_counter("豆乳"),
+        init_counter("ドリンク"),
     ];
 
     counters.forEach(counter => display.appendChild(counter));
