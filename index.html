@@ -83,7 +83,7 @@
 
     try {
         const data = JSON.parse(localStorage.data);
-        counters.forEach((c, i) => c.set(data[i]));
+        counters.forEach((c, i) => c.set(data[i] ?? 0));
     } catch (_) {
         localStorage.removeItem("data");
         reset.onclick();
