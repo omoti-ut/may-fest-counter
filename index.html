@@ -8,9 +8,20 @@
 
 <body>
     <div id="display"></div>
-    <div id="reset">RESET</div>
+    <div id="bottom">
+        <span id="unlock">UNLOCK</span>
+        <span id="reset">RESET</span>
+    </div>
 </body>
 <style>
+    * {
+        box-sizing: border-box;
+    }
+
+    [unlock] #display>*>*:nth-child(4)::after {
+        content: "▼";
+    }
+
     body {
         user-select: none;
         -webkit-user-select: none;
@@ -18,54 +29,79 @@
         /* Ensures borders don't cause screen overflow */
 
         /* Apply box-sizing globally for predictable border layout */
-        * {
-            box-sizing: border-box;
-        }
-        #display > * > *, #reset {
-            border: 1px solid black;
-        }
 
-        #display {
-            height: 90vh;
-            display: flex;
+    }
 
+    #display>*>*,
+    #reset,
+    #unlock {
+        border: 1px solid black;
+    }
+
+    #display {
+        height: 90vh;
+        display: flex;
+
+        &>* {
+            flex: 1;
+            display: grid;
+            grid-template-rows: 0.3fr 1fr 2fr 1fr;
+            height: 100%;
+            text-align: center;
+            align-items: center;
+
+            /* Internal horizontal borders between the text/buttons inside a column */
             &>* {
-		flex: 1;
-                display: grid;
-                grid-template-rows: 0.3fr 1fr 2fr 1fr;
                 height: 100%;
-                text-align: center;
+                display: flex;
                 align-items: center;
+                justify-content: center;
+            }
 
-                /* Internal horizontal borders between the text/buttons inside a column */
-                &>* {
-                    height: 100%;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                }
+            &>:nth-child(1) {
+                font-size: 3vh;
+            }
 
-                &>:nth-child(1) {
-                    font-size: 3vh;
-                }
+            &>:nth-child(3) {
+                font-size: 16vh;
+            }
 
-                &>:nth-child(3) {
-                    font-size: 16vh;
-                }
+            &>:nth-child(2)::after {
+                content: "▲";
+            }
 
-                &>:is(:nth-child(2), :nth-child(4)) {
-                    font-size: 10vh;
-                }
+            &>:nth-child(4)::after {
+                content: "🔒";
+            }
+
+            &>:is(:nth-child(2), :nth-child(4)) {
+                font-size: 10vh;
             }
         }
 
-        #reset {
-            height: 10vh;
-            display: flex;
-            /* Changed to flex for perfect vertical alignment with border */
-            align-items: center;
-            justify-content: center;
-            font-size: 5vh;
+    }
+
+
+    #bottom {
+        height: 10vh;
+        display: flex;
+    }
+
+    #reset,
+    #unlock {
+        display: flex;
+        flex: 1;
+        /* Changed to flex for perfect vertical alignment with border */
+        align-items: center;
+        justify-content: center;
+        font-size: 5vh;
+    }
+
+    body:not([unlock]) #reset {
+
+        &::after,
+        &::before {
+            content: "🔒";
         }
     }
 </style>
@@ -78,8 +114,10 @@
         init_counter("ドリンク"),
     ];
 
+    unlock.onpointerdown = _ => document.body.setAttribute("unlock", "");
+    unlock.onpointerup = _ => document.body.removeAttribute("unlock");
     counters.forEach(counter => display.appendChild(counter));
-    reset.onclick = () => counters.forEach(c => c.reset());
+    reset.onclick = _ => is_unlocked() && counters.forEach(c => c.reset());
 
     try {
         const data = JSON.parse(localStorage.data);
@@ -118,16 +156,17 @@
         counter_elm.reset = () => counter_elm.set(0);
 
         label_elm.innerText = name;
-        up_button_elm.innerText = "△";
-        down_button_elm.innerText = "▽";
         up_button_elm.onclick = counter_elm.inc;
-        down_button_elm.onclick = counter_elm.dec;
+        down_button_elm.onclick = _ => is_unlocked() && counter_elm.dec;
 
         return counter_elm;
     }
     function store_data() {
         const data = counters.map(x => x.value());
         localStorage.data = JSON.stringify(data);
+    }
+    function is_unlocked() {
+        return document.body.hasAttribute("unlock");
     }
 </script>
 
