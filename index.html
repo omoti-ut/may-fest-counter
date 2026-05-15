@@ -112,20 +112,10 @@
         init_counter("ドリンク"),
     ];
 
-    unlock.addEventListener("touchstart", e => {
-        e.preventDefault();
-        document.body.setAttribute("unlock", "")
-    });
-    unlock.addEventListener("touchend", e => {
-        e.preventDefault();
-        document.body.removeAttribute("unlock")
-    });
-    unlock.addEventListener("touchcancel", e => {
-        e.preventDefault();
-        document.body.removeAttribute("unlock")
-    });
+    unlock.onpointerdown = _ => document.body.setAttribute("unlock", "");
+    unlock.onpointerup = _ => document.body.removeAttribute("unlock");
     counters.forEach(counter => display.appendChild(counter));
-    reset.onclick = e => {
+    reset.onpointerdown = e => {
         if (is_unlocked()) {
             counters.forEach(c => c.reset());
         }
@@ -168,8 +158,8 @@
         counter_elm.reset = () => counter_elm.set(0);
 
         label_elm.innerText = name;
-        up_button_elm.onclick = counter_elm.inc;
-        down_button_elm.onclick = e => {
+        up_button_elm.onpointerdown = counter_elm.inc;
+        down_button_elm.onpointerdown = e => {
             if (is_unlocked()) {
                 counter_elm.dec();
             }
