@@ -117,7 +117,11 @@
     unlock.onpointerdown = _ => document.body.setAttribute("unlock", "");
     unlock.onpointerup = _ => document.body.removeAttribute("unlock");
     counters.forEach(counter => display.appendChild(counter));
-    reset.onclick = _ => is_unlocked() && counters.forEach(c => c.reset());
+    reset.onclick = _ => {
+        if (is_unlocked()) {
+            counters.forEach(c => c.reset());
+        }
+    }
 
     try {
         const data = JSON.parse(localStorage.data);
@@ -157,7 +161,11 @@
 
         label_elm.innerText = name;
         up_button_elm.onclick = counter_elm.inc;
-        down_button_elm.onclick = _ => is_unlocked() && counter_elm.dec;
+        down_button_elm.onclick = _ => {
+            if (is_unlocked()) {
+                counter_elm.dec();
+            }
+        }
 
         return counter_elm;
     }
