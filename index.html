@@ -18,8 +18,6 @@
         box-sizing: border-box;
         user-select: none;
         -webkit-user-select: none;
-        touch-action: none;
-
     }
 
     [unlock] #display>*>*:nth-child(4)::after {
@@ -116,7 +114,7 @@
     unlock.onpointerup = _ => document.body.removeAttribute("unlock");
     counters.forEach(counter => display.appendChild(counter));
     reset.onpointerdown = e => {
-        if (is_unlocked()) {
+        if (is_unlocked() && confirm("本当に消しますか？消したデータは絶対に戻りません。")) {
             counters.forEach(c => c.reset());
         }
     }
@@ -126,7 +124,7 @@
         counters.forEach((c, i) => c.set(data[i] ?? 0));
     } catch (_) {
         localStorage.removeItem("data");
-        reset.onclick();
+        counters.forEach(c => c.reset());
     }
 
     function create_div() {
