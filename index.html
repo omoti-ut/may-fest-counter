@@ -112,7 +112,7 @@
     ];
 
     unlock.onpointerdown = _ => document.body.setAttribute("unlock", "");
-    unlock.onpointerup = _ => document.body.removeAttribute("unlock");
+    unlock.onpointercancel = unlock.onpointerup = _ => document.body.removeAttribute("unlock");
     counters.forEach(counter => display.appendChild(counter));
     reset.onpointerdown = e => {
         if (is_unlocked() && confirm("本当に消しますか？消したデータは絶対に戻りません。")) {
