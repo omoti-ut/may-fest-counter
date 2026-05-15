@@ -114,8 +114,15 @@
         init_counter("ドリンク"),
     ];
 
-    unlock.onpointerdown = _ => document.body.setAttribute("unlock", "");
-    unlock.onpointerup = _ => document.body.removeAttribute("unlock");
+    unlock.addEventListener("touchstart",
+        _ => document.body.setAttribute("unlock", "")
+    );
+    unlock.addEventListener("touchend", 
+        _ => document.body.removeAttribute("unlock")
+    );
+    unlock.addEventListener("touchcancel", 
+        _ => document.body.removeAttribute("unlock")
+    );
     counters.forEach(counter => display.appendChild(counter));
     reset.onclick = e => {
         e.preventDefault();
