@@ -16,6 +16,10 @@
 <style>
     * {
         box-sizing: border-box;
+        user-select: none;
+        -webkit-user-select: none;
+        touch-action: none;
+
     }
 
     [unlock] #display>*>*:nth-child(4)::after {
@@ -23,13 +27,7 @@
     }
 
     body {
-        user-select: none;
-        -webkit-user-select: none;
         margin: 0;
-        /* Ensures borders don't cause screen overflow */
-
-        /* Apply box-sizing globally for predictable border layout */
-
     }
 
     #display>*>*,
@@ -114,18 +112,20 @@
         init_counter("ドリンク"),
     ];
 
-    unlock.addEventListener("touchstart",
-        _ => document.body.setAttribute("unlock", "")
-    );
-    unlock.addEventListener("touchend", 
-        _ => document.body.removeAttribute("unlock")
-    );
-    unlock.addEventListener("touchcancel", 
-        _ => document.body.removeAttribute("unlock")
-    );
+    unlock.addEventListener("touchstart", e => {
+        e.preventDefault();
+        document.body.setAttribute("unlock", "")
+    });
+    unlock.addEventListener("touchend", e => {
+        e.preventDefault();
+        document.body.removeAttribute("unlock")
+    });
+    unlock.addEventListener("touchcancel", e => {
+        e.preventDefault();
+        document.body.removeAttribute("unlock")
+    });
     counters.forEach(counter => display.appendChild(counter));
     reset.onclick = e => {
-        e.preventDefault();
         if (is_unlocked()) {
             counters.forEach(c => c.reset());
         }
@@ -170,7 +170,6 @@
         label_elm.innerText = name;
         up_button_elm.onclick = counter_elm.inc;
         down_button_elm.onclick = e => {
-            e.preventDefault();
             if (is_unlocked()) {
                 counter_elm.dec();
             }
